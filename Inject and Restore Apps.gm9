@@ -1,0 +1,1557 @@
+# GodMode9 script for restoring and injecting 
+# multiple CIA titles into Nintendo apps
+# Version 2.0, Apr-04-2018, author: TurdPooCharger
+# Credit: annson24 (pointing out flaw in .app dumping)
+# d0k3 (heads up about the need for file encryption)
+# The Real Jdbye (feature requests lead to curiosity)
+# ihaveamac (Title ID hex editing in extended header)
+
+if chk $[REGION] "UNK"
+	set ERRORMSG "Unknown region or SysNAND is broken."
+	chk "Aa" "Bb"
+end
+
+set CIA_FOLDER "0:/cia"			# Folder name and location of CIA files
+set CIA_SIZE_LIMIT "1000001"	# Largest injectable CIA file byte size in hex
+set CIA_SIZE_NUMBER "16 MB"		# Warning message of that size
+set LOGO_CHOICE "Homebrew"		# Splash screen: "Nintendo" or "Homebrew"
+
+@Menu
+labelsel -o -s "Selection Menu:" Selection_*
+goto Menu
+
+###################################################
+
+@Selection_Activity_Log
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020200"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021200"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022200"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026200"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027200"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028200"
+end
+
+set TARGET_NAME "Activity Log"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_AR_Games
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020E00"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021E00"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022E00"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026E00"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027E00"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028E00"
+end
+
+set TARGET_NAME "AR Games"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Download_Play
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020100"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021100"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022100"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026100"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027100"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028100"
+end
+
+set TARGET_NAME "Download Play"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Face_Raiders
+
+if chk $[ONTYPE] "N3DS"
+	  if chk $[REGION] "JPN"
+		set SysApp_TIDLow "20020D00"
+	elif chk $[REGION] "USA"
+		set SysApp_TIDLow "20021D00"
+	elif chk $[REGION] "EUR"
+		set SysApp_TIDLow "20022D00"
+	elif chk $[REGION] "CHN"
+		set SysApp_TIDLow "20026D00"
+	elif chk $[REGION] "KOR"
+		set SysApp_TIDLow "20027D00"
+	elif chk $[REGION] "TWN"
+		set SysApp_TIDLow "20028D00"
+	end
+end
+
+if chk $[ONTYPE] "O3DS"
+	  if chk $[REGION] "JPN"
+		set SysApp_TIDLow "00020D00"
+	elif chk $[REGION] "USA"
+		set SysApp_TIDLow "00021D00"
+	elif chk $[REGION] "EUR"
+		set SysApp_TIDLow "00022D00"
+	elif chk $[REGION] "CHN"
+		set SysApp_TIDLow "00026D00"
+	elif chk $[REGION] "KOR"
+		set SysApp_TIDLow "00027D00"
+	elif chk $[REGION] "TWN"
+		set SysApp_TIDLow "00028D00"
+	end	
+end
+
+set TARGET_NAME "Face Raiders"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Health_&_Safety
+
+if chk $[ONTYPE] "N3DS"
+	  if chk $[REGION] "JPN"
+		set SysApp_TIDLow "20020300"
+	elif chk $[REGION] "USA"
+		set SysApp_TIDLow "20021300"
+	elif chk $[REGION] "EUR"
+		set SysApp_TIDLow "20022300"
+	elif chk $[REGION] "CHN"
+		set SysApp_TIDLow "20026300"
+	elif chk $[REGION] "KOR"
+		set SysApp_TIDLow "20027300"
+	elif chk $[REGION] "TWN"
+		set SysApp_TIDLow "20028300"
+	end
+end
+
+if chk $[ONTYPE] "O3DS"
+	  if chk $[REGION] "JPN"
+		set SysApp_TIDLow "00020300"
+	elif chk $[REGION] "USA"
+		set SysApp_TIDLow "00021300"
+	elif chk $[REGION] "EUR"
+		set SysApp_TIDLow "00022300"
+	elif chk $[REGION] "CHN"
+		set SysApp_TIDLow "00026300"
+	elif chk $[REGION] "KOR"
+		set SysApp_TIDLow "00027300"
+	elif chk $[REGION] "TWN"
+		set SysApp_TIDLow "00028300"
+	end
+end
+
+set TARGET_NAME "Health & Safety"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Mii_Maker
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020700"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021700"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022700"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026700"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027700"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028700"
+end
+
+set TARGET_NAME "Mii Maker"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Nintendo_3DS_Camera
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020400"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021400"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022400"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026400"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027400"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028400"
+end
+
+set TARGET_NAME "Nintendo 3DS Camera"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Nintendo_3DS_Sound
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020500"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021500"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022500"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026500"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027500"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028500"
+end
+
+set TARGET_NAME "Nintendo 3DS Sound"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Nintendo_eShop
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020900"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021900"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022900"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026900"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027900"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028900"
+end
+
+set TARGET_NAME "Nintendo eShop"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_StreetPass_Mii_Plaza
+
+  if chk $[REGION] "JPN"
+	set SysApp_TIDLow "00020800"
+elif chk $[REGION] "USA"
+	set SysApp_TIDLow "00021800"
+elif chk $[REGION] "EUR"
+	set SysApp_TIDLow "00022800"
+elif chk $[REGION] "CHN"
+	set SysApp_TIDLow "00026800"
+elif chk $[REGION] "KOR"
+	set SysApp_TIDLow "00027800"
+elif chk $[REGION] "TWN"
+	set SysApp_TIDLow "00028800"
+end
+
+set TARGET_NAME "StreetPass Mii Plaza"
+goto TARGET_INFO
+
+###################################################
+
+@Selection_Misc_Options
+goto MISC_OPTIONS
+
+###################################################
+ 
+@Selection_Exit
+
+set ERRORMSG "Exiting."
+chk "Aa" "Bb"
+
+###################################################
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+
+@MISC_OPTIONS
+labelsel -o -s "Miscellaneous Options\nSplash Screen: $[LOGO_CHOICE]" Misc_Option_*
+goto MISC_OPTIONS
+
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+
+@Misc_Option_Inject_All
+
+if ask "All Nintendo apps will be injected.\nContinue?"
+		set INJECT_RENEW "ON"
+		goto Selection_Activity_Log
+	else
+		goto MISC_OPTIONS
+end
+
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+
+@Misc_Option_Restore_All
+
+if ask "All Nintendo apps will be restored.\nContinue?"
+		set INJECT_RESET "ON"
+		goto Selection_Activity_Log
+	else
+		goto MISC_OPTIONS
+end
+
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+
+@Misc_Option_Splash_Screen
+
+  if chk $[LOGO_CHOICE] "Homebrew"
+	set LOGO_CHOICE "Nintendo"
+elif chk $[LOGO_CHOICE] "Nintendo"
+	set LOGO_CHOICE "Homebrew"
+else
+	echo "The 'LOGO_CHOICE' variable input is:\n$[LOGO_CHOICE]\n \nPlease edit the script's default with either:\nNintendo or Homebrew"
+end 
+
+goto MISC_OPTIONS
+
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+
+@Misc_Option_Clear_Icon_Cache
+
+if not ask "For removing stuck icons from injected apps,\nthis will clear the HOME Menu icon cache.\n \nContinue?"
+	goto MISC_OPTIONS
+end
+
+find -f "0:/Nintendo 3DS/$[SYSID0]/*" HOMEMENU_ICONS
+
+  if chk $[REGION] "JPN"
+	set HOMEMENU_ICONS "$[HOMEMENU_ICONS]/extdata/00000000/00000082"
+elif chk $[REGION] "USA"
+	set HOMEMENU_ICONS "$[HOMEMENU_ICONS]/extdata/00000000/0000008f"
+elif chk $[REGION] "EUR"
+	set HOMEMENU_ICONS "$[HOMEMENU_ICONS]/extdata/00000000/00000098"
+elif chk $[REGION] "CHN"
+	set HOMEMENU_ICONS "$[HOMEMENU_ICONS]/extdata/00000000/000000a1"
+elif chk $[REGION] "KOR"
+	set HOMEMENU_ICONS "$[HOMEMENU_ICONS]/extdata/00000000/000000a9"
+elif chk $[REGION] "TWN"
+	set HOMEMENU_ICONS "$[HOMEMENU_ICONS]/extdata/00000000/000000b1"
+end
+
+set HOMEMENU_ICONS "$[HOMEMENU_ICONS]/00000000"
+
+@CLEAR_ICONS
+
+if not rm "$[HOMEMENU_ICONS]/00000004"
+	if ask "Icon cache clearing interrupted.\nTry again?"
+			goto CLEAR_ICONS
+		else
+			echo "HOME Menu icon cache not cleared."
+			goto MISC_OPTIONS
+	end
+end
+
+if rm "$[HOMEMENU_ICONS]/00000005"
+end
+
+fdummy "$[HOMEMENU_ICONS]/00000004" 000
+fdummy "$[HOMEMENU_ICONS]/00000005" 000
+
+echo "Icon cache requires a rebuild.\nPlease reboot into HOME Menu."
+
+goto MISC_OPTIONS
+
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+
+@Misc_Option_Return_to_Menu
+
+goto Menu
+
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+
+@Misc_Option_Exit
+
+set ERRORMSG "Exiting."
+chk "Aa" "Bb"
+
+# ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ # ~ #
+###################################################
+
+@TARGET_INFO
+
+set TARGET_DIR "1:/title/00040010/$[SysApp_TIDLow]/content"
+
+if not find -f "$[TARGET_DIR]/*.app" TARGET_ID
+	echo "$[TARGET_NAME] is missing."
+	
+	if chk $[INJECT_RENEW] "ON"
+		
+		if ask "Continue injection run?" 
+				goto INJECT_AND_RESTORE
+			else
+				set INJECT_RENEW "OFF"
+				goto MISC_OPTIONS
+		end
+		
+	elif chk $[INJECT_RESET] "ON"
+		
+		if ask "Continue restoration run?" 
+				goto INJECT_AND_RESTORE
+			else
+				set INJECT_RESET "OFF"
+				goto MISC_OPTIONS
+		end	
+		
+	else
+		goto Menu
+	end
+end
+
+strsplit TARGET_ID $[TARGET_ID] "/"
+strsplit -b TARGET_ID $[TARGET_ID] "."
+
+  if chk $[TARGET_NAME] "Nintendo 3DS Sound"
+	set TARGET_ID "0000000e"
+elif chk $[TARGET_NAME] "Nintendo eShop"
+	set TARGET_ID "00000070"
+end
+
+set TARGET_APP "$[TARGET_DIR]/$[TARGET_ID].app"
+set TARGET_BAK "$[TARGET_DIR]/$[TARGET_ID].bak"
+set TARGET_OLD "$[TARGET_DIR]/$[TARGET_ID]_old.app"
+set TARGET_NCCH "$[TARGET_DIR]/$[TARGET_ID]_ncch.bin"
+set TARGET_EXTHEADER "$[TARGET_DIR]/$[TARGET_ID]_extheader.bin"
+set TARGET_EXTHEADER_SHA "$[TARGET_DIR]/$[TARGET_ID]_extheader.sha"
+set TARGET_ICON "$[TARGET_DIR]/$[TARGET_ID]_icon.bin"
+set TARGET_ICON_SHA "$[TARGET_DIR]/$[TARGET_ID]_icon.sha"
+set TARGET_LOGO "$[TARGET_DIR]/$[TARGET_ID]_logo.bin"
+set TARGET_LOGO_SHA "$[TARGET_DIR]/$[TARGET_ID]_logo.sha"
+
+if find -f "$[TARGET_DIR]/*.inj" TARGET_INJ
+		strsplit INJECTION_ID $[TARGET_INJ] "/"
+		strsplit -b INJECTION_ID  $[INJECTION_ID] "."
+	else
+		set INJECTION_ID " "
+end
+
+if find $[TARGET_BAK] TARGET_BAK
+		set TARGET_STATUS "Injected"
+	else
+		set TARGET_STATUS "Not Injected"
+end
+
+  if chk $[INJECT_RENEW] "ON"
+	goto Choices_Inject
+elif chk $[INJECT_RESET] "ON"
+	goto RESTORE_FULL
+else
+	goto Start
+end
+
+###################################################
+
+@Start
+
+if chk $[TARGET_STATUS] "Injected"
+	set INJECT_STATEMENT "\nInjection: $[INJECTION_ID]"
+elif chk $[TARGET_STATUS] "Not Injected"
+	set INJECT_STATEMENT ""
+end
+
+labelsel -o -s "$[TARGET_NAME]\nSplash: $[LOGO_CHOICE]$[INJECT_STATEMENT]" Choices_*
+
+  if chk $[LOGO_CHOICE] "Homebrew"
+	set LOGO_CHOICE "Nintendo"
+elif chk $[LOGO_CHOICE] "Nintendo"
+	set LOGO_CHOICE "Homebrew"
+end 
+
+goto Start
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+
+@Choices_Inject
+
+if findnot $[CIA_FOLDER] CIA_FOLDER
+	echo "$[CIA_FOLDER] folder is missing."
+	
+	if chk $[INJECT_RENEW] "ON"
+			set INJECT_RENEW "OFF"
+			goto MISC_OPTIONS
+		else
+			goto Start
+	end
+end
+
+if chk $[TARGET_STATUS] "Injected"
+	
+	if not mv -n $[TARGET_APP] $[TARGET_OLD]
+		
+		if chk $[INJECT_RENEW] "ON"
+				
+				if ask "Injection cancelled for \n$[TARGET_NAME].\n \nContinue?"
+						goto INJECT_AND_RESTORE
+					else
+						set INJECT_RENEW "OFF"
+						goto MISC_OPTIONS
+				end
+				
+			else
+				echo "Injection cancelled."
+				goto Start
+		end
+	end
+end
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+@CIA_SELECT
+
+if not filesel "$[TARGET_NAME]\nSplash: $[LOGO_CHOICE]$[INJECT_STATEMENT]\n \nSelect a file:" $[CIA_FOLDER]/*.cia CIA_FILE
+	
+	if find $[TARGET_OLD] TARGET_OLD
+		mv -n $[TARGET_OLD] $[TARGET_APP]
+	end
+	
+	if chk $[INJECT_RENEW] "ON"
+			
+			if ask "Injection cancelled for \n$[TARGET_NAME].\n \nContinue?"
+					goto INJECT_AND_RESTORE
+				else
+					set INJECT_RENEW "OFF"
+					goto MISC_OPTIONS
+			end
+			
+		else
+			goto Start
+	end	
+end
+
+strsplit CIA_NAME $[CIA_FILE] "/"
+strsplit -b CIA_NAME $[CIA_NAME] "."
+
+if not imgmount $[CIA_FILE]
+	echo "$[CIA_NAME] \nis corrupt."
+	goto CIA_SELECT
+elif not find -f G:/*.app CIA_APP
+	imgumount
+	echo "$[CIA_NAME] \nis a fake CIA file."
+	goto CIA_SELECT
+elif shaget $[CIA_APP]@$[CIA_SIZE_LIMIT]:001 CIA_SAFETY
+	imgumount
+	echo "$[CIA_NAME] \nexceeds $[CIA_SIZE_NUMBER] safety limiter."
+	goto CIA_SELECT
+end
+	
+strsplit -b CIA_APP_CONTENTS $[CIA_APP] "."
+set CIA_NCCH "$[CIA_APP_CONTENTS]/ncch.bin"
+
+if not find $[CIA_NCCH] CIA_NCCH
+	imgumount
+	echo "$[CIA_NAME] \nis a CIA DSiWare."
+	goto CIA_SELECT
+end
+
+@SHAGET_CIA_NCCH
+
+if not shaget $[CIA_NCCH]@150:05 CIA_TYPE												# CTR-?
+	goto SHAGET_CIA_NCCH
+end
+
+imgumount
+
+  if chk $[CIA_TYPE] "F8FE959170D4EF4FCED8D766A15DB48F6FEE18467B52D076C7EBD31B099E1952"	# CTR-U
+	echo "$[CIA_NAME] \nis a CIA update."
+	goto CIA_SELECT	
+elif chk $[CIA_TYPE] "32643CD77553B177C3BAE0990D8942CBD48862CB76E791584A4F5C7955540B17"	# CTR-M
+	echo "$[CIA_NAME] \nis a CIA DLC."
+	goto CIA_SELECT	
+elif chk $[CIA_TYPE] "91B08C5E84705360948AEB20313BF84E93F8CBED839637DCB83855AAD9EC1B91"	# CTR-T
+	echo "$[CIA_NAME] \nis a CIA eShop demo."
+	goto CIA_SELECT
+end
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+  if imgmount $[TARGET_BAK]
+elif imgmount $[TARGET_APP]
+end
+
+if not cp -n "G:/ncch.bin" $[TARGET_NCCH]
+	imgumount
+
+	if chk $[INJECT_RENEW] "ON"
+			
+			if ask "Injection cancelled for \n$[TARGET_NAME].\n \nContinue?"
+					goto INJECT_AND_RESTORE
+				else
+					set INJECT_RENEW "OFF"
+					goto MISC_OPTIONS
+			end
+			
+		else
+			echo "Injection cancelled."
+			goto Start
+	end
+end
+
+cp -n "G:/extheader.bin" $[TARGET_EXTHEADER]
+cp -n "G:/exefs/icon" $[TARGET_ICON]
+
+if not chk $[LOGO_CHOICE] "Homebrew"
+	  if cp -n "G:/logo.bin" $[TARGET_LOGO]
+	elif cp -n "G:/exefs/logo" $[TARGET_LOGO]
+	end
+end
+
+imgumount
+
+if findnot $[TARGET_BAK] TARGET_BAK
+	mv -n $[TARGET_APP] $[TARGET_BAK]
+end
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+imgmount $[CIA_FILE]
+cp -n $[CIA_APP] $[TARGET_APP]
+imgumount
+
+imgmount $[TARGET_APP]
+
+set INJECT_LOGO "G:/logo.bin"
+set INJECT_PLAIN "G:/plain.bin"
+set INJECT_EXEFS "$[TARGET_DIR]/inject_exefs.bin"
+set INJECT_EXEFS_SHA "$[TARGET_DIR]/inject_exefs.sha"
+set INJECT_CODE "$[TARGET_DIR]/inject_code.bin"
+set INJECT_BANNER "$[TARGET_DIR]/inject_banner.bin"
+
+if find $[INJECT_LOGO] INJECT_LOGO 
+	
+	if find $[INJECT_PLAIN] INJECT_PLAIN
+			set LOGO_LOCATION "Outside_ExeFS"
+			set EXEFS_OFFSET "2C00"
+		else
+			set LOGO_LOCATION "Outside_ExeFS"
+			set EXEFS_OFFSET "2A00"
+	end
+	
+	if find "G:/exefs/logo" "G:/exefs/logo"
+			set LOGO_LOCATION "Outside_&_Inside_ExeFS"
+	end
+
+elif find $[INJECT_PLAIN] INJECT_PLAIN
+			set LOGO_LOCATION "Inside_ExeFS"
+			set EXEFS_OFFSET "0C00"
+		else
+			set LOGO_LOCATION "Inside_ExeFS"
+			set EXEFS_OFFSET "0A00"
+end
+
+cp -n "G:/exefs.bin" $[INJECT_EXEFS]
+cp -n "G:/exefs/.code" $[INJECT_CODE]
+cp -n "G:/exefs/banner" $[INJECT_BANNER]
+
+if chk $[LOGO_CHOICE] "Homebrew"
+	  if cp -n "G:/logo.bin" $[TARGET_LOGO]
+	elif cp -n "G:/exefs/logo" $[TARGET_LOGO]
+	end
+end
+	
+imgumount
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+inject -n $[TARGET_NCCH]@000:100 $[TARGET_APP]@000				# RSA-2048 Signature
+inject -n $[TARGET_NCCH]@108:008 $[TARGET_APP]@108				# Partition ID
+inject -n $[TARGET_NCCH]@110:008 $[TARGET_APP]@110				# Maker Code & Version 
+inject -n $[TARGET_NCCH]@118:008 $[TARGET_APP]@118				# Program ID [equals Partition ID]
+inject -n $[TARGET_NCCH]@150:010 $[TARGET_APP]@150				# Product Code
+inject -n $[TARGET_NCCH]@188:008 $[TARGET_APP]@188				# Flags
+inject -n $[TARGET_NCCH]@108:008 $[TARGET_APP]@3C8				# ExHeader Program ID #1
+inject -n $[TARGET_NCCH]@108:008 $[TARGET_APP]@400				# ExHeader Program ID #2
+inject -n $[TARGET_NCCH]@108:008 $[TARGET_APP]@800				# ExHeader Program ID #3
+rm $[TARGET_NCCH]
+
+inject -n $[TARGET_EXTHEADER]@000:008 $[TARGET_APP]@200			# Application Title 
+rm $[TARGET_EXTHEADER]
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+@SHAGET_EXTHEADER
+
+if not shaget $[TARGET_APP]@200:400 $[TARGET_EXTHEADER_SHA]
+	goto SHAGET_EXTHEADER
+end
+
+inject -n $[TARGET_EXTHEADER_SHA]@000:020 $[TARGET_APP]@160 	# Extended Header hash
+rm $[TARGET_EXTHEADER_SHA]
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+@SHAGET_LOGO
+	
+if not shaget $[TARGET_LOGO] $[TARGET_LOGO_SHA]
+	goto SHAGET_LOGO
+end
+
+  if chk $[LOGO_LOCATION] "Outside_&_Inside_ExeFS"				# Logo hash (both locations)
+	inject -n $[TARGET_LOGO_SHA]@000:020 $[INJECT_EXEFS]@180
+	inject -n $[TARGET_LOGO_SHA]@000:020 $[TARGET_APP]@130
+elif chk $[LOGO_LOCATION] "Inside_ExeFS"
+	inject -n $[TARGET_LOGO_SHA]@000:020 $[INJECT_EXEFS]@180	# Logo hash (if inside ExeFS)
+elif chk $[LOGO_LOCATION] "Outside_ExeFS"
+	inject -n $[TARGET_LOGO_SHA]@000:020 $[TARGET_APP]@130		# Logo hash (if inside NCCH)
+end
+
+rm $[TARGET_LOGO_SHA]
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+@SHAGET_ICON
+
+if not shaget $[TARGET_ICON] $[TARGET_ICON_SHA]
+	goto SHAGET_ICON
+end
+
+inject -n $[TARGET_ICON_SHA]@000:020 $[INJECT_EXEFS]@1A0		# Icon hash (inside ExeFS)
+rm $[TARGET_ICON_SHA]
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+@SHAGET_EXEFS
+
+if not shaget $[INJECT_EXEFS]@000:200 $[INJECT_EXEFS_SHA]
+	goto SHAGET_EXEFS
+end
+
+inject -n $[INJECT_EXEFS_SHA]@000:020 $[TARGET_APP]@1C0			# ExeFS hash (inside NCCH)
+rm $[INJECT_EXEFS_SHA]
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+set BANNER_OFFSET ""
+set ICON_OFFSET ""
+set LOGO_OFFSET ""
+set INPUT_HEX "$[TARGET_DIR]/input_hex.bin"
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+set HASH_HEX_RUN "01"
+inject -n $[INJECT_EXEFS]@1B:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@BANNER_1B
+set BANNER_OFFSET "$[BANNER_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "02"
+inject -n $[INJECT_EXEFS]@1A:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@BANNER_1A
+set BANNER_OFFSET "$[BANNER_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "03"
+inject -n $[INJECT_EXEFS]@19:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@BANNER_19
+set BANNER_OFFSET "$[BANNER_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "04"
+inject -n $[INJECT_EXEFS]@18:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@BANNER_18
+set BANNER_OFFSET "$[BANNER_OFFSET]$[HEX_ADDRESS]"
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+set HASH_HEX_RUN "05"
+inject -n $[INJECT_EXEFS]@2B:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@ICON_2B
+set ICON_OFFSET "$[ICON_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "06"
+inject -n $[INJECT_EXEFS]@2A:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@ICON_2A
+set ICON_OFFSET "$[ICON_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "07"
+inject -n $[INJECT_EXEFS]@29:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@ICON_29
+set ICON_OFFSET "$[ICON_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "08"
+inject -n $[INJECT_EXEFS]@28:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@ICON_28
+set ICON_OFFSET "$[ICON_OFFSET]$[HEX_ADDRESS]"
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+if chk $[LOGO_LOCATION] "Outside_ExeFS"
+	goto SKIP_LOGO
+end
+
+set HASH_HEX_RUN "09"
+inject -n $[INJECT_EXEFS]@3B:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@LOGO_3B
+set LOGO_OFFSET "$[LOGO_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "10"
+inject -n $[INJECT_EXEFS]@3A:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@LOGO_3A
+set LOGO_OFFSET "$[LOGO_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "11"
+inject -n $[INJECT_EXEFS]@39:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@LOGO_39
+set LOGO_OFFSET "$[LOGO_OFFSET]$[HEX_ADDRESS]"
+
+set HASH_HEX_RUN "12"
+inject -n $[INJECT_EXEFS]@38:01 $[INPUT_HEX]@00
+goto HASH_TO_HEX_CONVERTER
+@LOGO_38
+set LOGO_OFFSET "$[LOGO_OFFSET]$[HEX_ADDRESS]"
+
+@SKIP_LOGO
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+set INJECT_STEALTH $[INJECT_CODE]
+
+inject -n $[INJECT_BANNER]@000 $[INJECT_STEALTH]@$[BANNER_OFFSET]			# banner.bin (inside ExeFS)
+rm $[INJECT_BANNER]
+
+inject -n $[TARGET_ICON]@0000:36C0 $[INJECT_STEALTH]@$[ICON_OFFSET]			# icon.bin (inside ExeFS)
+rm $[TARGET_ICON]
+
+  if chk $[LOGO_LOCATION] "Outside_&_Inside_ExeFS"							# logo.bin (both locations)
+	inject -n $[TARGET_LOGO]@0000:2000 $[TARGET_APP]@A00
+	inject -n $[TARGET_LOGO]@0000:2000 $[INJECT_STEALTH]@$[LOGO_OFFSET]
+elif chk $[LOGO_LOCATION] "Outside_ExeFS"
+	inject -n $[TARGET_LOGO]@0000:2000 $[TARGET_APP]@A00					# logo.bin (if outside ExeFS)
+elif chk $[LOGO_LOCATION] "Inside_ExeFS"
+	inject -n $[TARGET_LOGO]@0000:2000 $[INJECT_STEALTH]@$[LOGO_OFFSET]		# logo.bin (if inside ExeFS)
+end
+rm $[TARGET_LOGO]
+
+inject -n $[INJECT_STEALTH]@000 $[INJECT_EXEFS]@200							# exefs.bin (recreated, modified)
+rm $[INJECT_STEALTH]
+
+inject -n $[INJECT_EXEFS]@000 $[TARGET_APP]@$[EXEFS_OFFSET]					# TitleID.app (recreated, modified)
+rm $[INJECT_EXEFS]
+
+### _ ### _ ### _ ### _ ### _ ### _ ### _ ###
+
+@RE_ENCRYPT
+
+if not encrypt $[TARGET_APP]
+	
+	if ask "Encryption failed or interrupted.\nTry again?"
+			goto RE_ENCRYPT	
+			
+		else
+			
+			if find $[TARGET_OLD] TARGET_OLD
+					rm $[TARGET_APP]
+					mv -n $[TARGET_OLD] $[TARGET_APP]
+					echo "Current injection restored."
+				else
+					rm $[TARGET_APP]
+					mv -n $[TARGET_BAK] $[TARGET_APP]
+					echo "Injection cancelled."
+			end
+			
+			if chk $[INJECT_RENEW] "ON"
+					
+					if ask "Injection cancelled for \n$[TARGET_NAME].\n \nContinue?"
+							goto INJECT_AND_RESTORE
+						else
+							set INJECT_RENEW "OFF"
+							goto MISC_OPTIONS
+					end
+					
+				else
+					goto Start
+			end
+	end
+end
+
+if rm $[TARGET_OLD]
+end
+
+if not chk $[INJECTION_ID] " "
+	rm $[TARGET_INJ]
+end
+
+strsplit INJECTION_ID  $[CIA_FILE] "/"
+strsplit -b INJECTION_ID $[INJECTION_ID] "."
+set TARGET_INJ "$[TARGET_DIR]/$[INJECTION_ID].inj"
+fdummy $[TARGET_INJ] 000
+
+set TARGET_STATUS "Injected"
+strsplit CIA_FILE $[CIA_FILE] "/"
+echo "$[CIA_FILE]\n$[CIA_APP]\n \n$[TARGET_NAME]\ninject success"
+
+if chk $[INJECT_RENEW] "ON"
+		goto INJECT_AND_RESTORE
+	else
+		goto Start
+end
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+
+@Choices_Restore
+
+if chk $[TARGET_STATUS] "Injected"
+		
+		if rm $[TARGET_APP]
+				mv -n $[TARGET_BAK] $[TARGET_APP]
+					
+					if rm $[TARGET_INJ]
+						set INJECTION_ID " "
+					end
+					
+				set TARGET_STATUS "Not Injected"
+				echo "$[TARGET_NAME] restored."
+			else
+				echo "Restoration cancelled."
+		end
+		
+	else
+		echo "No app injected in $[TARGET_NAME]."
+end
+
+goto Start
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+
+@Choices_Menu
+
+goto Menu
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+ 
+@Choices_Exit
+
+set ERRORMSG "Exiting."
+chk "Aa" "Bb"
+
+### ### ### ### ### ### ### ### ### ### ###
+
+@RESTORE_FULL
+
+if chk $[TARGET_STATUS] "Injected"
+	
+	if rm $[TARGET_APP]
+			mv -n $[TARGET_BAK] $[TARGET_APP]
+				
+				if rm $[TARGET_INJ]
+					set INJECTION_ID " "
+				end
+				
+			set TARGET_STATUS "Not Injected"
+		else
+			set INJECT_RESET "OFF" 
+			echo "Full restore cancelled."
+			goto MISC_OPTIONS
+	end	
+end
+
+goto INJECT_AND_RESTORE
+
+### ### ### ### ### ### ### ### ### ### ###
+
+@INJECT_AND_RESTORE
+
+  if chk $[TARGET_NAME] "Activity Log"
+	goto Selection_AR_Games
+elif chk $[TARGET_NAME] "AR Games"
+	goto Selection_Download_Play
+elif chk $[TARGET_NAME] "Download Play"
+	goto Selection_Face_Raiders
+elif chk $[TARGET_NAME] "Face Raiders"
+	goto Selection_Health_&_Safety
+elif chk $[TARGET_NAME] "Health & Safety"
+	goto Selection_Mii_Maker
+elif chk $[TARGET_NAME] "Mii Maker"
+	goto Selection_Nintendo_3DS_Camera
+elif chk $[TARGET_NAME] "Nintendo 3DS Camera"
+	goto Selection_Nintendo_3DS_Sound
+elif chk $[TARGET_NAME] "Nintendo 3DS Sound"	
+	goto Selection_Nintendo_eShop
+elif chk $[TARGET_NAME] "Nintendo eShop"	
+	goto Selection_StreetPass_Mii_Plaza
+elif chk $[TARGET_NAME] "StreetPass Mii Plaza"
+	# goto Selection_ (for more apps)
+end
+
+  if chk $[INJECT_RENEW] "ON"
+	set INJECT_RENEW "OFF"
+	echo "Injection complete."
+elif chk $[INJECT_RESET] "ON"
+	set INJECT_RESET "OFF"
+	echo "Restoration complete."
+end
+
+goto MISC_OPTIONS
+
+#########################################################################################
+
+@HASH_TO_HEX_CONVERTER
+
+if not shaget $[INPUT_HEX]@00:01 INPUT_HASH
+	goto HASH_TO_HEX_CONVERTER
+end
+
+  if chk $[INPUT_HASH] 6E340B9CFFB37A989CA544E6BB780A2C78901D3FB33738768511A30617AFA01D
+	set HEX_ADDRESS "00"
+elif chk $[INPUT_HASH] 4BF5122F344554C53BDE2EBB8CD2B7E3D1600AD631C385A5D7CCE23C7785459A
+	set HEX_ADDRESS "01"
+elif chk $[INPUT_HASH] DBC1B4C900FFE48D575B5DA5C638040125F65DB0FE3E24494B76EA986457D986
+	set HEX_ADDRESS "02"
+elif chk $[INPUT_HASH] 084FED08B978AF4D7D196A7446A86B58009E636B611DB16211B65A9AADFF29C5
+	set HEX_ADDRESS "03"
+elif chk $[INPUT_HASH] E52D9C508C502347344D8C07AD91CBD6068AFC75FF6292F062A09CA381C89E71
+	set HEX_ADDRESS "04"
+elif chk $[INPUT_HASH] E77B9A9AE9E30B0DBDB6F510A264EF9DE781501D7B6B92AE89EB059C5AB743DB
+	set HEX_ADDRESS "05"
+elif chk $[INPUT_HASH] 67586E98FAD27DA0B9968BC039A1EF34C939B9B8E523A8BEF89D478608C5ECF6
+	set HEX_ADDRESS "06"
+elif chk $[INPUT_HASH] CA358758F6D27E6CF45272937977A748FD88391DB679CEDA7DC7BF1F005EE879
+	set HEX_ADDRESS "07"
+elif chk $[INPUT_HASH] BEEAD77994CF573341EC17B58BBF7EB34D2711C993C1D976B128B3188DC1829A
+	set HEX_ADDRESS "08"
+elif chk $[INPUT_HASH] 2B4C342F5433EBE591A1DA77E013D1B72475562D48578DCA8B84BAC6651C3CB9
+	set HEX_ADDRESS "09"
+elif chk $[INPUT_HASH] 01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B
+	set HEX_ADDRESS "0A"
+elif chk $[INPUT_HASH] E7CF46A078FED4FAFD0B5E3AFF144802B853F8AE459A4F0C14ADD3314B7CC3A6
+	set HEX_ADDRESS "0B"
+elif chk $[INPUT_HASH] EF6CBD2161EAEA7943CE8693B9824D23D1793FFB1C0FCA05B600D3899B44C977
+	set HEX_ADDRESS "0C"
+elif chk $[INPUT_HASH] 9D1E0E2D9459D06523AD13E28A4093C2316BAAFE7AEC5B25F30EBA2E113599C4
+	set HEX_ADDRESS "0D"
+elif chk $[INPUT_HASH] 4D7B3EF7300ACF70C892D8327DB8272F54434ADBC61A4E130A563CB59A0D0F47
+	set HEX_ADDRESS "0E"
+elif chk $[INPUT_HASH] DC0E9C3658A1A3ED1EC94274D8B19925C93E1ABB7DDBA294923AD9BDE30F8CB8
+	set HEX_ADDRESS "0F"
+elif chk $[INPUT_HASH] C555EAB45D08845AE9F10D452A99BFCB06F74A50B988FE7E48DD323789B88EE3
+	set HEX_ADDRESS "10"
+elif chk $[INPUT_HASH] 4A64A107F0CB32536E5BCE6C98C393DB21CCA7F4EA187BA8C4DCA8B51D4EA80A
+	set HEX_ADDRESS "11"
+elif chk $[INPUT_HASH] F299791CDDD3D6664F6670842812EF6053EB6501BD6282A476BBBF3EE91E750C
+	set HEX_ADDRESS "12"
+elif chk $[INPUT_HASH] AB897FBDEDFA502B2D839B6A56100887DCCDC507555C282E59589E06300A62E2
+	set HEX_ADDRESS "13"
+elif chk $[INPUT_HASH] 83891D7FE85C33E52C8B4E5814C92FB6A3B9467299200538A6BABAA8B452D879
+	set HEX_ADDRESS "14"
+elif chk $[INPUT_HASH] 2F0FD1E89B8DE1D57292742EC380EA47066E307AD645F5BC3ADAD8A06FF58608
+	set HEX_ADDRESS "15"
+elif chk $[INPUT_HASH] 7CB7C4547CF2653590D7A9ACE60CC623D25148ADFBC88A89AEB0EF88DA7839BA
+	set HEX_ADDRESS "16"
+elif chk $[INPUT_HASH] 8F11B05DA785E43E713D03774C6BD3405D99CD3024AF334FFD68DB663AA37034
+	set HEX_ADDRESS "17"
+elif chk $[INPUT_HASH] 452BA1DDEF80246C48BE7690193C76C1D61185906BE9401014FE14F1BE64B74F
+	set HEX_ADDRESS "18"
+elif chk $[INPUT_HASH] 68AA2E2EE5DFF96E3355E6C7EE373E3D6A4E17F75F9518D843709C0C9BC3E3D4
+	set HEX_ADDRESS "19"
+elif chk $[INPUT_HASH] 58F7B0780592032E4D8602A3E8690FB2C701B2E1DD546E703445AABD6469734D
+	set HEX_ADDRESS "1A"
+elif chk $[INPUT_HASH] 77ADFC95029E73B173F60E556F915B0CD8850848111358B1C370FB7C154E61FD
+	set HEX_ADDRESS "1B"
+elif chk $[INPUT_HASH] BD4FC42A21F1F860A1030E6EBA23D53ECAB71BD19297AB6C074381D4ECEE0018
+	set HEX_ADDRESS "1C"
+elif chk $[INPUT_HASH] 1F18D650D205D71D934C3646FF5FAC1C096BA52EBA4CF758B865364F4167D3CD
+	set HEX_ADDRESS "1D"
+elif chk $[INPUT_HASH] 9652595F37EDD08C51DFA26567E6CD76E6FA2709C3E578478CA398D316837A7A
+	set HEX_ADDRESS "1E"
+elif chk $[INPUT_HASH] FFE679BB831C95B67DC17819C63C5090D221AAC6F4C7BF530F594AB43D21FA1E
+	set HEX_ADDRESS "1F"
+elif chk $[INPUT_HASH] 36A9E7F1C95B82FFB99743E0C5C4CE95D83C9A430AAC59F84EF3CBFAB6145068
+	set HEX_ADDRESS "20"
+elif chk $[INPUT_HASH] BB7208BC9B5D7C04F1236A82A0093A5E33F40423D5BA8D4266F7092C3BA43B62
+	set HEX_ADDRESS "21"
+elif chk $[INPUT_HASH] 8A331FDDE7032F33A71E1B2E257D80166E348E00FCB17914F48BDB57A1C63007
+	set HEX_ADDRESS "22"
+elif chk $[INPUT_HASH] 334359B90EFED75DA5F0ADA1D5E6B256F4A6BD0AEE7EB39C0F90182A021FFC8B
+	set HEX_ADDRESS "23"
+elif chk $[INPUT_HASH] 09FC96082D34C2DFC1295D92073B5EA1DC8EF8DA95F14DFDED011FFB96D3E54B
+	set HEX_ADDRESS "24"
+elif chk $[INPUT_HASH] BBF3F11CB5B43E700273A78D12DE55E4A7EAB741ED2ABF13787A4D2DC832B8EC
+	set HEX_ADDRESS "25"
+elif chk $[INPUT_HASH] 951DCEE3A7A4F3AAC67EC76A2CE4469CC76DF650F134BF2572BF60A65C982338
+	set HEX_ADDRESS "26"
+elif chk $[INPUT_HASH] 265FDA17A34611B1533D8A281FF680DC5791B0CE0A11C25B35E11C8E75685509
+	set HEX_ADDRESS "27"
+elif chk $[INPUT_HASH] 32EBB1ABCC1C601CEB9C4E3C4FABA0CAA5B85BB98C4F1E6612C40FAA528A91C9
+	set HEX_ADDRESS "28"
+elif chk $[INPUT_HASH] BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE
+	set HEX_ADDRESS "29"
+elif chk $[INPUT_HASH] 684888C0EBB17F374298B65EE2807526C066094C701BCC7EBBE1C1095F494FC1
+	set HEX_ADDRESS "2A"
+elif chk $[INPUT_HASH] A318C24216DEFE206FEEB73EF5BE00033FA9C4A74D0B967F6532A26CA5906D3B
+	set HEX_ADDRESS "2B"
+elif chk $[INPUT_HASH] D03502C43D74A30B936740A9517DC4EA2B2AD7168CAA0A774CEFE793CE0B33E7
+	set HEX_ADDRESS "2C"
+elif chk $[INPUT_HASH] 3973E022E93220F9212C18D0D0C543AE7C309E46640DA93A4A0314DE999F5112
+	set HEX_ADDRESS "2D"
+elif chk $[INPUT_HASH] CDB4EE2AEA69CC6A83331BBE96DC2CAA9A299D21329EFB0336FC02A82E1839A8
+	set HEX_ADDRESS "2E"
+elif chk $[INPUT_HASH] 8A5EDAB282632443219E051E4ADE2D1D5BBC671C781051BF1437897CBDFEA0F1
+	set HEX_ADDRESS "2F"
+elif chk $[INPUT_HASH] 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9
+	set HEX_ADDRESS "30"
+elif chk $[INPUT_HASH] 6B86B273FF34FCE19D6B804EFF5A3F5747ADA4EAA22F1D49C01E52DDB7875B4B
+	set HEX_ADDRESS "31"
+elif chk $[INPUT_HASH] D4735E3A265E16EEE03F59718B9B5D03019C07D8B6C51F90DA3A666EEC13AB35
+	set HEX_ADDRESS "32"
+elif chk $[INPUT_HASH] 4E07408562BEDB8B60CE05C1DECFE3AD16B72230967DE01F640B7E4729B49FCE
+	set HEX_ADDRESS "33"
+elif chk $[INPUT_HASH] 4B227777D4DD1FC61C6F884F48641D02B4D121D3FD328CB08B5531FCACDABF8A
+	set HEX_ADDRESS "34"
+elif chk $[INPUT_HASH] EF2D127DE37B942BAAD06145E54B0C619A1F22327B2EBBCFBEC78F5564AFE39D
+	set HEX_ADDRESS "35"
+elif chk $[INPUT_HASH] E7F6C011776E8DB7CD330B54174FD76F7D0216B612387A5FFCFB81E6F0919683
+	set HEX_ADDRESS "36"
+elif chk $[INPUT_HASH] 7902699BE42C8A8E46FBBB4501726517E86B22C56A189F7625A6DA49081B2451
+	set HEX_ADDRESS "37"
+elif chk $[INPUT_HASH] 2C624232CDD221771294DFBB310ACA000A0DF6AC8B66B696D90EF06FDEFB64A3
+	set HEX_ADDRESS "38"
+elif chk $[INPUT_HASH] 19581E27DE7CED00FF1CE50B2047E7A567C76B1CBAEBABE5EF03F7C3017BB5B7
+	set HEX_ADDRESS "39"
+elif chk $[INPUT_HASH] E7AC0786668E0FF0F02B62BD04F45FF636FD82DB63B1104601C975DC005F3A67
+	set HEX_ADDRESS "3A"
+elif chk $[INPUT_HASH] 41B805EA7AC014E23556E98BB374702A08344268F92489A02F0880849394A1E4
+	set HEX_ADDRESS "3B"
+elif chk $[INPUT_HASH] DABD3AFF769F07EB2965401EB029974EBBA3407AFD02B26DDB564EA5F8EFAE72
+	set HEX_ADDRESS "3C"
+elif chk $[INPUT_HASH] 380918B946A526640A40DF5DCED6516794F3D97BBD9E6BB553D037C4439F31C3
+	set HEX_ADDRESS "3D"
+elif chk $[INPUT_HASH] 62B67E1F685B7FEF51102005DDDD27774BE3FEE38C42965C53AAB035D0B6B221
+	set HEX_ADDRESS "3E"
+elif chk $[INPUT_HASH] 8A8DE823D5ED3E12746A62EF169BCF372BE0CA44F0A1236ABC35DF05D96928E1
+	set HEX_ADDRESS "3F"
+elif chk $[INPUT_HASH] C3641F8544D7C02F3580B07C0F9887F0C6A27FF5AB1D4A3E29CAF197CFC299AE
+	set HEX_ADDRESS "40"
+elif chk $[INPUT_HASH] 559AEAD08264D5795D3909718CDD05ABD49572E84FE55590EEF31A88A08FDFFD
+	set HEX_ADDRESS "41"
+elif chk $[INPUT_HASH] DF7E70E5021544F4834BBEE64A9E3789FEBC4BE81470DF629CAD6DDB03320A5C
+	set HEX_ADDRESS "42"
+elif chk $[INPUT_HASH] 6B23C0D5F35D1B11F9B683F0B0A617355DEB11277D91AE091D399C655B87940D
+	set HEX_ADDRESS "43"
+elif chk $[INPUT_HASH] 3F39D5C348E5B79D06E842C114E6CC571583BBF44E4B0EBFDA1A01EC05745D43
+	set HEX_ADDRESS "44"
+elif chk $[INPUT_HASH] A9F51566BD6705F7EA6AD54BB9DEB449F795582D6529A0E22207B8981233EC58
+	set HEX_ADDRESS "45"
+elif chk $[INPUT_HASH] F67AB10AD4E4C53121B6A5FE4DA9C10DDEE905B978D3788D2723D7BFACBE28A9
+	set HEX_ADDRESS "46"
+elif chk $[INPUT_HASH] 333E0A1E27815D0CEEE55C473FE3DC93D56C63E3BEE2B3B4AEE8EED6D70191A3
+	set HEX_ADDRESS "47"
+elif chk $[INPUT_HASH] 44BD7AE60F478FAE1061E11A7739F4B94D1DAF917982D33B6FC8A01A63F89C21
+	set HEX_ADDRESS "48"
+elif chk $[INPUT_HASH] A83DD0CCBFFE39D071CC317DDF6E97F5C6B1C87AF91919271F9FA140B0508C6C
+	set HEX_ADDRESS "49"
+elif chk $[INPUT_HASH] 6DA43B944E494E885E69AF021F93C6D9331C78AA228084711429160A5BBD15B5
+	set HEX_ADDRESS "4A"
+elif chk $[INPUT_HASH] 86BE9A55762D316A3026C2836D044F5FC76E34DA10E1B45FEEE5F18BE7EDB177
+	set HEX_ADDRESS "4B"
+elif chk $[INPUT_HASH] 72DFCFB0C470AC255CDE83FB8FE38DE8A128188E03EA5BA5B2A93ADBEA1062FA
+	set HEX_ADDRESS "4C"
+elif chk $[INPUT_HASH] 08F271887CE94707DA822D5263BAE19D5519CB3614E0DAEDC4C7CE5DAB7473F1
+	set HEX_ADDRESS "4D"
+elif chk $[INPUT_HASH] 8CE86A6AE65D3692E7305E2C58AC62EEBD97D3D943E093F577DA25C36988246B
+	set HEX_ADDRESS "4E"
+elif chk $[INPUT_HASH] C4694F2E93D5C4E7D51F9C5DEB75E6CC8BE5E1114178C6A45B6FC2C566A0AA8C
+	set HEX_ADDRESS "4F"
+elif chk $[INPUT_HASH] 5C62E091B8C0565F1BAFAD0DAD5934276143AE2CCEF7A5381E8ADA5B1A8D26D2
+	set HEX_ADDRESS "50"
+elif chk $[INPUT_HASH] 4AE81572F06E1B88FD5CED7A1A000945432E83E1551E6F721EE9C00B8CC33260
+	set HEX_ADDRESS "51"
+elif chk $[INPUT_HASH] 8C2574892063F995FDF756BCE07F46C1A5193E54CD52837ED91E32008CCF41AC
+	set HEX_ADDRESS "52"
+elif chk $[INPUT_HASH] 8DE0B3C47F112C59745F717A626932264C422A7563954872E237B223AF4AD643
+	set HEX_ADDRESS "53"
+elif chk $[INPUT_HASH] E632B7095B0BF32C260FA4C539E9FD7B852D0DE454E9BE26F24D0D6F91D069D3
+	set HEX_ADDRESS "54"
+elif chk $[INPUT_HASH] A25513C7E0F6EAA80A3337EE18081B9E2ED09E00AF8531C8F7BB2542764027E7
+	set HEX_ADDRESS "55"
+elif chk $[INPUT_HASH] DE5A6F78116ECA62D7FC5CE159D23AE6B889B365A1739AD2CF36F925A140D0CC
+	set HEX_ADDRESS "56"
+elif chk $[INPUT_HASH] FCB5F40DF9BE6BAE66C1D77A6C15968866A9E6CBD7314CA432B019D17392F6F4
+	set HEX_ADDRESS "57"
+elif chk $[INPUT_HASH] 4B68AB3847FEDA7D6C62C1FBCBEEBFA35EAB7351ED5E78F4DDADEA5DF64B8015
+	set HEX_ADDRESS "58"
+elif chk $[INPUT_HASH] 18F5384D58BCB1BBA0BCD9E6A6781D1A6AC2CC280C330ECBAB6CB7931B721552
+	set HEX_ADDRESS "59"
+elif chk $[INPUT_HASH] BBEEBD879E1DFF6918546DC0C179FDDE505F2A21591C9A9C96E36B054EC5AF83
+	set HEX_ADDRESS "5A"
+elif chk $[INPUT_HASH] 245843ABEF9E72E7EFAC30138A994BF6301E7E1D7D7042A33D42E863D2638811
+	set HEX_ADDRESS "5B"
+elif chk $[INPUT_HASH] A9253DC8529DD214E5F22397888E78D3390DAA47593E26F68C18F97FD7A3876B
+	set HEX_ADDRESS "5C"
+elif chk $[INPUT_HASH] CFAE0D4248F7142F7B17F826CD7A519280E312577690E957830D23DCF35A3FFF
+	set HEX_ADDRESS "5D"
+elif chk $[INPUT_HASH] 74CD9EF9C7E15F57BDAD73C511462CA65CB674C46C49639C60F1B44650FA1DCB
+	set HEX_ADDRESS "5E"
+elif chk $[INPUT_HASH] D2E2ADF7177B7A8AFDDBC12D1634CF23EA1A71020F6A1308070A16400FB68FDE
+	set HEX_ADDRESS "5F"
+elif chk $[INPUT_HASH] 8D33F520A3C4CEF80D2453AEF81B612BFE1CB44C8B2025630AD38662763F13D3
+	set HEX_ADDRESS "60"
+elif chk $[INPUT_HASH] CA978112CA1BBDCAFAC231B39A23DC4DA786EFF8147C4E72B9807785AFEE48BB
+	set HEX_ADDRESS "61"
+elif chk $[INPUT_HASH] 3E23E8160039594A33894F6564E1B1348BBD7A0088D42C4ACB73EEAED59C009D
+	set HEX_ADDRESS "62"
+elif chk $[INPUT_HASH] 2E7D2C03A9507AE265ECF5B5356885A53393A2029D241394997265A1A25AEFC6
+	set HEX_ADDRESS "63"
+elif chk $[INPUT_HASH] 18AC3E7343F016890C510E93F935261169D9E3F565436429830FAF0934F4F8E4
+	set HEX_ADDRESS "64"
+elif chk $[INPUT_HASH] 3F79BB7B435B05321651DAEFD374CDC681DC06FAA65E374E38337B88CA046DEA
+	set HEX_ADDRESS "65"
+elif chk $[INPUT_HASH] 252F10C83610EBCA1A059C0BAE8255EBA2F95BE4D1D7BCFA89D7248A82D9F111
+	set HEX_ADDRESS "66"
+elif chk $[INPUT_HASH] CD0AA9856147B6C5B4FF2B7DFEE5DA20AA38253099EF1B4A64ACED233C9AFE29
+	set HEX_ADDRESS "67"
+elif chk $[INPUT_HASH] AAA9402664F1A41F40EBBC52C9993EB66AEB366602958FDFAA283B71E64DB123
+	set HEX_ADDRESS "68"
+elif chk $[INPUT_HASH] DE7D1B721A1E0632B7CF04EDF5032C8ECFFA9F9A08492152B926F1A5A7E765D7
+	set HEX_ADDRESS "69"
+elif chk $[INPUT_HASH] 189F40034BE7A199F1FA9891668EE3AB6049F82D38C68BE70F596EAB2E1857B7
+	set HEX_ADDRESS "6A"
+elif chk $[INPUT_HASH] 8254C329A92850F6D539DD376F4816EE2764517DA5E0235514AF433164480D7A
+	set HEX_ADDRESS "6B"
+elif chk $[INPUT_HASH] ACAC86C0E609CA906F632B0E2DACCCB2B77D22B0621F20EBECE1A4835B93F6F0
+	set HEX_ADDRESS "6C"
+elif chk $[INPUT_HASH] 62C66A7A5DD70C3146618063C344E531E6D4B59E379808443CE962B3ABD63C5A
+	set HEX_ADDRESS "6D"
+elif chk $[INPUT_HASH] 1B16B1DF538BA12DC3F97EDBB85CAA7050D46C148134290FEBA80F8236C83DB9
+	set HEX_ADDRESS "6E"
+elif chk $[INPUT_HASH] 65C74C15A686187BB6BBF9958F494FC6B80068034A659A9AD44991B08C58F2D2
+	set HEX_ADDRESS "6F"
+elif chk $[INPUT_HASH] 148DE9C5A7A44D19E56CD9AE1A554BF67847AFB0C58F6E12FA29AC7DDFCA9940
+	set HEX_ADDRESS "70"
+elif chk $[INPUT_HASH] 8E35C2CD3BF6641BDB0E2050B76932CBB2E6034A0DDACC1D9BEA82A6BA57F7CF
+	set HEX_ADDRESS "71"
+elif chk $[INPUT_HASH] 454349E422F05297191EAD13E21D3DB520E5ABEF52055E4964B82FB213F593A1
+	set HEX_ADDRESS "72"
+elif chk $[INPUT_HASH] 043A718774C572BD8A25ADBEB1BFCD5C0256AE11CECF9F9C3F925D0E52BEAF89
+	set HEX_ADDRESS "73"
+elif chk $[INPUT_HASH] E3B98A4DA31A127D4BDE6E43033F66BA274CAB0EB7EB1C70EC41402BF6273DD8
+	set HEX_ADDRESS "74"
+elif chk $[INPUT_HASH] 0BFE935E70C321C7CA3AFC75CE0D0CA2F98B5422E008BB31C00C6D7F1F1C0AD6
+	set HEX_ADDRESS "75"
+elif chk $[INPUT_HASH] 4C94485E0C21AE6C41CE1DFE7B6BFACEEA5AB68E40A2476F50208E526F506080
+	set HEX_ADDRESS "76"
+elif chk $[INPUT_HASH] 50E721E49C013F00C62CF59F2163542A9D8DF02464EFEB615D31051B0FDDC326
+	set HEX_ADDRESS "77"
+elif chk $[INPUT_HASH] 2D711642B726B04401627CA9FBAC32F5C8530FB1903CC4DB02258717921A4881
+	set HEX_ADDRESS "78"
+elif chk $[INPUT_HASH] A1FCE4363854FF888CFF4B8E7875D600C2682390412A8CF79B37D0B11148B0FA
+	set HEX_ADDRESS "79"
+elif chk $[INPUT_HASH] 594E519AE499312B29433B7DD8A97FF068DEFCBA9755B6D5D00E84C524D67B06
+	set HEX_ADDRESS "7A"
+elif chk $[INPUT_HASH] 021FB596DB81E6D02BF3D2586EE3981FE519F275C0AC9CA76BBCF2EBB4097D96
+	set HEX_ADDRESS "7B"
+elif chk $[INPUT_HASH] CBE5CFDF7C2118A9C3D78EF1D684F3AFA089201352886449A06A6511CFEF74A7
+	set HEX_ADDRESS "7C"
+elif chk $[INPUT_HASH] D10B36AA74A59BCF4A88185837F658AFAF3646EFF2BB16C3928D0E9335E945D2
+	set HEX_ADDRESS "7D"
+elif chk $[INPUT_HASH] 7ACE431CB61584CB9B8DC7EC08CF38AC0A2D649660BE86D349FB43108B542FA4
+	set HEX_ADDRESS "7E"
+elif chk $[INPUT_HASH] 620BFDAA346B088FB49998D92F19A7EAF6BFC2FB0AEE015753966DA1028CB731
+	set HEX_ADDRESS "7F"
+elif chk $[INPUT_HASH] 76BE8B528D0075F7AAE98D6FA57A6D3C83AE480A8469E668D7B0AF968995AC71
+	set HEX_ADDRESS "80"
+elif chk $[INPUT_HASH] 591B7CC95037822DEC5A4D593A2E2E8B19C07DDD2570E5699003D17F14C440A6
+	set HEX_ADDRESS "81"
+elif chk $[INPUT_HASH] A5AB782C805E8BFBE34CB65742A0471CF5A53A97F0A1160AB6CCCBB64C9131CE
+	set HEX_ADDRESS "82"
+elif chk $[INPUT_HASH] 5EE0DD4D4840229FAB4A86438EFBCAF1B9571AF94F5ACE5ACC94DE19E98EA9AB
+	set HEX_ADDRESS "83"
+elif chk $[INPUT_HASH] AAA8E61E7FAF37DD77CC5F907B38146741994B27D5B1978679AF68B43F55E7C5
+	set HEX_ADDRESS "84"
+elif chk $[INPUT_HASH] C00E7F889CFC9216EC818BF2E1682FC6AF0D89939C91776669478CAF27C9727C
+	set HEX_ADDRESS "85"
+elif chk $[INPUT_HASH] 3CBDAF66B3DD2B174788A2F17F938B52DDA93A2A97440CEAD19332CBFACBA7C8
+	set HEX_ADDRESS "86"
+elif chk $[INPUT_HASH] 4BFA260A661D68110A7A0A45264D2D43AF9727DE925CC2E09FB687B3651EFE9D
+	set HEX_ADDRESS "87"
+elif chk $[INPUT_HASH] 4F362F9093BB8E7012F466224FF1237C0746D8C8F660B16699F5036CCBA9C64A
+	set HEX_ADDRESS "88"
+elif chk $[INPUT_HASH] E9B0C031F0493D3FD6B0B668260C79E7EFE734BFD4B4115F9D82BC3BE609C294
+	set HEX_ADDRESS "89"
+elif chk $[INPUT_HASH] 2D3193691934124461809FB9BC7E671215099FC7D961BFBE31943D40D477C890
+	set HEX_ADDRESS "8A"
+elif chk $[INPUT_HASH] 3EBE1B59762A1C8020C1EFE3747DD07F0E30617ED60B4E6A5BEE16B6EA421DD0
+	set HEX_ADDRESS "8B"
+elif chk $[INPUT_HASH] 9DEFB0A9E163278BE0E05AA01B312EC78CFA3726869503385E76E3A4B7950648
+	set HEX_ADDRESS "8C"
+elif chk $[INPUT_HASH] 075198BFE61765D35F990DEBE90959D438A943CEEB9D39440E7DB5455D449086
+	set HEX_ADDRESS "8D"
+elif chk $[INPUT_HASH] 949F94D858EF6AD1333164D796A0D777FD82F9155ECE7D6FAD68C0B992F0E7AF
+	set HEX_ADDRESS "8E"
+elif chk $[INPUT_HASH] 5E37305C587CAF07E99A08E1EFD0749FD3BBBB855752E4D568AC2DBFC2025464
+	set HEX_ADDRESS "8F"
+elif chk $[INPUT_HASH] 9E076CEAF246B6003D9C2680A2B4CF0BFFD069805902B0B5EDEEBF49039FE4BD
+	set HEX_ADDRESS "90"
+elif chk $[INPUT_HASH] 7DA59D0DFBE21F43E842E8AFB43E12A6445BBAC07C2FC26984C71D0DE3F99C9C
+	set HEX_ADDRESS "91"
+elif chk $[INPUT_HASH] 956062137518B270D730D4753000896DE17C100A42F9E24F5ACEE2FAA75D5FDD
+	set HEX_ADDRESS "92"
+elif chk $[INPUT_HASH] D16BD22F7196C0A70F4B12AA0B290C4C4ACECD5D6BA350ECC8447FBDF4C3819B
+	set HEX_ADDRESS "93"
+elif chk $[INPUT_HASH] 67C872D4912C71F15D2D6134DDF1D33D46F4BAB2B56FE787522E7E4C9B58657D
+	set HEX_ADDRESS "94"
+elif chk $[INPUT_HASH] 5BAD0D1132AC152CF657BE8918AE163578448D56D40DEF9A590FE3DCAB0C339B
+	set HEX_ADDRESS "95"
+elif chk $[INPUT_HASH] 84873854DBA02CF6A765A6277A311301B2656A7F770851828FE792ECEF9092E3
+	set HEX_ADDRESS "96"
+elif chk $[INPUT_HASH] 2A0AB732B4E9D85EF7DC25303B64AB527C25A4D77815EBB579F396EC6CACCAD3
+	set HEX_ADDRESS "97"
+elif chk $[INPUT_HASH] 79BEC7FF3E69D1B470EB8684F2005A867A7980222474CBC1AFD26A9A4F206D4A
+	set HEX_ADDRESS "98"
+elif chk $[INPUT_HASH] FD9528B920D6D3956E9E16114523E1889C751E8C1E040182116D4C906B43F558
+	set HEX_ADDRESS "99"
+elif chk $[INPUT_HASH] 0605D1534EB8995FE8FC7DCF1FAC025EA5E26FC26D6B1FC2C79AA0F04159EF41
+	set HEX_ADDRESS "9A"
+elif chk $[INPUT_HASH] 8D36BBB3D6FBF24F38BA020D9CEEEF5D4562F5F26629F66B076FF395C438695E
+	set HEX_ADDRESS "9B"
+elif chk $[INPUT_HASH] 6E3FAF1E27D45FCA70234AE8F6F0A734622CFF8A6EA824B7F60D3FFAFA2A4654
+	set HEX_ADDRESS "9C"
+elif chk $[INPUT_HASH] 9D277175737FB50041E75F641ACF94D10DF9B9721DB8FFFE874AB57F8FFB062E
+	set HEX_ADDRESS "9D"
+elif chk $[INPUT_HASH] 35AF2D15EBDE4D67B29569EC19749E813C76F02286AFC5A2A9871C2BFBDAAB32
+	set HEX_ADDRESS "9E"
+elif chk $[INPUT_HASH] 1F184F101C67D585BA00D24CFDE36863F747FBAB9E84AF7760EC771E9B36CA51
+	set HEX_ADDRESS "9F"
+elif chk $[INPUT_HASH] C19A797FA1FD590CD2E5B42D1CF5F246E29B91684E2F87404B81DC345C7A56A0
+	set HEX_ADDRESS "A0"
+elif chk $[INPUT_HASH] 8A8950F7623663222542C9469C73BE3C4C81BBDF019E2C577590A61F2CE9A157
+	set HEX_ADDRESS "A1"
+elif chk $[INPUT_HASH] 0A43B22D89FA2499BE5C7704C9BF273260B0CA9588E4CD1897CD80F9C96CD97A
+	set HEX_ADDRESS "A2"
+elif chk $[INPUT_HASH] 6D90FBACC073EE0B4C43F3A3291CECDA33764F6D66D14224AD60F471F2C8334B
+	set HEX_ADDRESS "A3"
+elif chk $[INPUT_HASH] 88AA3E3B1F22C616B1817981215E7D1E75FA32B22233EBB8477F64600A5ACE1F
+	set HEX_ADDRESS "A4"
+elif chk $[INPUT_HASH] 6922E93E3827642CE4B883C756B31ABF80036649D3614BF5FCB3ADDA43B8EA32
+	set HEX_ADDRESS "A5"
+elif chk $[INPUT_HASH] FE1DCD3ABFCD6B1655A026E60A05D03A7F71E4B6070F36E6C7E9C4B6F3D3BF1B
+	set HEX_ADDRESS "A6"
+elif chk $[INPUT_HASH] 2DBF9365A0B09D85BBD6176D8B2332AA5AE97BEF652712473BC69165E74B22ED
+	set HEX_ADDRESS "A7"
+elif chk $[INPUT_HASH] 74E1ADE320C66075468E17CFAB33F41E8E0EACA45EDB6DD7B086C49A358D2A69
+	set HEX_ADDRESS "A8"
+elif chk $[INPUT_HASH] 9E8E8C37A53BAC77A653D590B783B2508E8ED2FED040A278BF4F4703BBD5D82D
+	set HEX_ADDRESS "A9"
+elif chk $[INPUT_HASH] BCEEF655B5A034911F1C3718CE056531B45EF03B4C7B1F15629E867294011A7D
+	set HEX_ADDRESS "AA"
+elif chk $[INPUT_HASH] 087D80F7F182DD44F184AA86CA34488853EBCC04F0C60D5294919A466B463831
+	set HEX_ADDRESS "AB"
+elif chk $[INPUT_HASH] EE6BB86B44339392BAE631C8F61DD8F009243C635ADAB33C0B20923A2794BF22
+	set HEX_ADDRESS "AC"
+elif chk $[INPUT_HASH] 22ADAF058A2CB668B15CB4C1F30E7CC720BBE38C146544169DB35FBF630389C4
+	set HEX_ADDRESS "AD"
+elif chk $[INPUT_HASH] 19753A9B7681B36104C1F79DFC8A6A1ECCC088B8C7D2903A446D81694D2FB3A9
+	set HEX_ADDRESS "AE"
+elif chk $[INPUT_HASH] 5A6E7A4754AF8E7F47FC9493040D853E7B01E39D537CB1DD353C93B7AE58EB3D
+	set HEX_ADDRESS "AF"
+elif chk $[INPUT_HASH] F4F97C88C409DCF3789B5B518DA3F7D266C488066E97A606E38A150779880735
+	set HEX_ADDRESS "B0"
+elif chk $[INPUT_HASH] 149488D869CBEF080602A371AB0D39D97AF103FB726AAEB02CCD36C06F494E5D
+	set HEX_ADDRESS "B1"
+elif chk $[INPUT_HASH] 9BE3799F24592E94E1F7991E5F312648A509CE2FB1EDBAFA50A66B65C916539A
+	set HEX_ADDRESS "B2"
+elif chk $[INPUT_HASH] 65F15821061635E6807F06701BF0A12D8E89DCFF88DF5968BD0822C9DBB52F1C
+	set HEX_ADDRESS "B3"
+elif chk $[INPUT_HASH] 27952171C7FCDF0DDC765AB4F4E1C537CB29E5E533D57B3456257EE785C81711
+	set HEX_ADDRESS "B4"
+elif chk $[INPUT_HASH] 892F60B39450A0E770F00A836761C8E964FD74671AE2CC51CFF36CDE4F914C12
+	set HEX_ADDRESS "B5"
+elif chk $[INPUT_HASH] CA41841C5C98E34F4A3AE83D9220940395301A9616F69D6672B04EA322F28EB0
+	set HEX_ADDRESS "B6"
+elif chk $[INPUT_HASH] 4D6A8E90039FC9782A1BBBD3CCED923633E38EB83CF857D2E795E9EA13EF7D4D
+	set HEX_ADDRESS "B7"
+elif chk $[INPUT_HASH] D3BB0D59E354EA843E790801303A46E880219996C6850DDD4C85A83E08C41D92
+	set HEX_ADDRESS "B8"
+elif chk $[INPUT_HASH] 04D6C0C946716AAC894FC1653383543A91FAAB601302CF011607C82F06304651
+	set HEX_ADDRESS "B9"
+elif chk $[INPUT_HASH] 281C93990BAC2C69CF372C9A3B66C406C86CCA826D6407B68E644DA22EEF8186
+	set HEX_ADDRESS "BA"
+elif chk $[INPUT_HASH] CBECDA1C7D37D4C0AA5466243BB4A0018C31BF06D74FA7338290DD3068DB4FED
+	set HEX_ADDRESS "BB"
+elif chk $[INPUT_HASH] 26E5BFE4B0686167E3E4E0AAC40CBAE03515171D375F91EA563C9C044E9C5CC7
+	set HEX_ADDRESS "BC"
+elif chk $[INPUT_HASH] 68325720AABD7C82F30F554B313D0570C95ACCBB7DC4B5AAE11204C08FFE732B
+	set HEX_ADDRESS "BD"
+elif chk $[INPUT_HASH] 478508483CBB05DEFD7DCDAC355DADF06282A6F2E14342CCCBA99E840202F943
+	set HEX_ADDRESS "BE"
+elif chk $[INPUT_HASH] B12DC850A3B0A3B79FC2255E175241CE20489FE45DF93FF35C42C6C348DF4FBF
+	set HEX_ADDRESS "BF"
+elif chk $[INPUT_HASH] E4FF5E7D7A7F08E9800A3E25CB774533CB20040DF30B6BA10F956F9ACD0EB3F7
+	set HEX_ADDRESS "C0"
+elif chk $[INPUT_HASH] D1BBD73BB09190BFB883056771E22E997541ED20079793BF33975FE1654581C3
+	set HEX_ADDRESS "C1"
+elif chk $[INPUT_HASH] C557E71380112B980EAF1145FA80621130DFBDFA1E375D87AE0018B7C60AC16B
+	set HEX_ADDRESS "C2"
+elif chk $[INPUT_HASH] AE3F4619B0413D70D3004B9131C3752153074E45725BE13B9A148978895E359E
+	set HEX_ADDRESS "C3"
+elif chk $[INPUT_HASH] D1211001882D2CE16A8553E449B6C8B7F71E61836EFC2E416143808F20E721E7
+	set HEX_ADDRESS "C4"
+elif chk $[INPUT_HASH] 5A0EC31DAA84FA27666DA56AF259B9351086BBA0B9AB4AA6007E3E6FB1866B47
+	set HEX_ADDRESS "C5"
+elif chk $[INPUT_HASH] 49994461D6B46390F014C8C5275A8591EF8764760AFE2739CEE23F6FBE285778
+	set HEX_ADDRESS "C6"
+elif chk $[INPUT_HASH] 3340883AAD3038DD993B3C94D2D32C3B20E07859969ACA411F7F93AB8847C746
+	set HEX_ADDRESS "C7"
+elif chk $[INPUT_HASH] 7C5BD2D144FDDE498406EDCB9FE60CE65B0DFA5F2DD7A7617F505E3D46D68BDB
+	set HEX_ADDRESS "C8"
+elif chk $[INPUT_HASH] 4FB733BEDB74FEC8D65BEDF056B935189A289E928B3302BEC38A281814DE523A
+	set HEX_ADDRESS "C9"
+elif chk $[INPUT_HASH] 13598656F10FA962B75F6C4587A61A067C14C1EF7DC9CA3703DA76BAE4C1BEB1
+	set HEX_ADDRESS "CA"
+elif chk $[INPUT_HASH] 383E5D7D58CAA41CE723CF16AF471B38F6EE9065C032D07FA6BEF1678CB72F1D
+	set HEX_ADDRESS "CB"
+elif chk $[INPUT_HASH] 1DD8312636F6A0BF3D21FA2855E63072507453E93A5CED4301B364E91C9D87D6
+	set HEX_ADDRESS "CC"
+elif chk $[INPUT_HASH] 9A7B7B3A5D50781B4F4768CD7CE223168F6B449B78AD6AC594DB5788C3B805D1
+	set HEX_ADDRESS "CD"
+elif chk $[INPUT_HASH] C337DED6F56C07205FB7B391654D7D463C9E0C726869523AE6024C9BEC878878
+	set HEX_ADDRESS "CE"
+elif chk $[INPUT_HASH] 7A4A4B50F5121ED5310ECE45A7EEB7AF5545AF63EE2AE52ADD4F37788F075B1D
+	set HEX_ADDRESS "CF"
+elif chk $[INPUT_HASH] D4B0C0A4A8CC6C257AED34D16D39DD3C2D3539ED67FD4BADD40AEF16C1591715
+	set HEX_ADDRESS "D0"
+elif chk $[INPUT_HASH] B5C9A5F48292E3FBC1B4B3CD495D76CF68697AD02BAF09C1740D37250F776599
+	set HEX_ADDRESS "D1"
+elif chk $[INPUT_HASH] 85F97E04D754C81DAC21F0CE857ADC81170D08C6CFEF7CF90EDBBABF39D9671A
+	set HEX_ADDRESS "D2"
+elif chk $[INPUT_HASH] 28969CDFA74A12C82F3BAD960B0B000ACA2AC329DEEA5C2328EBC6F2BA9802C1
+	set HEX_ADDRESS "D3"
+elif chk $[INPUT_HASH] 528A84CE6B18EB7D0E54BE01379122A76DFDCA14C97F02E0424AABF0220D9F51
+	set HEX_ADDRESS "D4"
+elif chk $[INPUT_HASH] CDCE9374E0FECEE1655CBC7207B0ED392201941F084C4B5672E917A99C7B2B26
+	set HEX_ADDRESS "D5"
+elif chk $[INPUT_HASH] 0A2C6EA0370D1D49C411A6E2396695FCD4EAB03D96E9E7A8A3EC1EC312D9AB38
+	set HEX_ADDRESS "D6"
+elif chk $[INPUT_HASH] 414A21E525A759E3FFEB22556BE6348A92D5A13E40B61A0805F36F18C2909513
+	set HEX_ADDRESS "D7"
+elif chk $[INPUT_HASH] AF193A8CDCD0E3FB39E71147E59EFA5CAD40763D2611F5BEFF34A274F514362F
+	set HEX_ADDRESS "D8"
+elif chk $[INPUT_HASH] 19152DDFBA193B5B09FCB80D1BBA5248F36027C06E81670DB5A7146FB654D4EC
+	set HEX_ADDRESS "D9"
+elif chk $[INPUT_HASH] 5D5C7D20A3AAB9C158F23304DF4BEC3BD9D56C517DB3CAEAA519D4D05624D7A0
+	set HEX_ADDRESS "DA"
+elif chk $[INPUT_HASH] B7D25296E7BC6A6BF66DA09B1C5ED273D99E3A9FC6D43E46CCB8B358FA13D4E9
+	set HEX_ADDRESS "DB"
+elif chk $[INPUT_HASH] FB95AA98D6E6C5827A57EC17B978D647FCC01D98C357B7E64989AF57339E9AC3
+	set HEX_ADDRESS "DC"
+elif chk $[INPUT_HASH] 2795044CE0F83F718BC79C5F2ADD1E52521978DF91CE9B7F82C9097191D33602
+	set HEX_ADDRESS "DD"
+elif chk $[INPUT_HASH] 7941CB07924FDC7B710E11D98D82850E89566E1C3CB980517FFE4B430F86DFD5
+	set HEX_ADDRESS "DE"
+elif chk $[INPUT_HASH] 2EA970FF63AEC5D7A014CA6447EC743D3BA37450B85EBDCBB582B089B0194FA2
+	set HEX_ADDRESS "DF"
+elif chk $[INPUT_HASH] 7D8C5DA7FD418379048E430B33DC8FFCDA739E44326B8A5D647DC0AD81ED2157
+	set HEX_ADDRESS "E0"
+elif chk $[INPUT_HASH] F031EFA58744E97A34555CA98621D4E8A52CEB5F20B891D5C44CCAE0DAAAA644
+	set HEX_ADDRESS "E1"
+elif chk $[INPUT_HASH] 30A5BFA58E128AF9E5A4955725D8AD26D4D574A537B58B7DC6D357ACAD578572
+	set HEX_ADDRESS "E2"
+elif chk $[INPUT_HASH] 457E4854863E7EFAA03266AD781822ECCE69DF31A511786118C10771A87E69F2
+	set HEX_ADDRESS "E3"
+elif chk $[INPUT_HASH] 5E1EFFE9B7BAB73DCE628CCD9F0CBBB16C1E6EFC6C4F311E59992A467BC119FD
+	set HEX_ADDRESS "E4"
+elif chk $[INPUT_HASH] AB61BA11A38B007FF98BAA3AB20E2A584E15269FD428DB3C857E2A2D568B5725
+	set HEX_ADDRESS "E5"
+elif chk $[INPUT_HASH] 0A3AAEE7CCFB1A64F6D7BCD46657C27CB1F4569AE9E7C03445BD6C6FD013109B
+	set HEX_ADDRESS "E6"
+elif chk $[INPUT_HASH] D0752B60ADB148CA0B3B4D2591874E2DABD346373E731C27463D65B449CC234C
+	set HEX_ADDRESS "E7"
+elif chk $[INPUT_HASH] E6F207509AFA3908DA116CE61A7576954248D9FE64A3C652B493CCA57CE36E2E
+	set HEX_ADDRESS "E8"
+elif chk $[INPUT_HASH] DE2E331D891AE267A7009CB45B4E8830F170E0C937288EA2731A1941C7A53B0D
+	set HEX_ADDRESS "E9"
+elif chk $[INPUT_HASH] 3AD4E44A4306FB62B2DF0AB7069C67B9A0F8C8EFF9F1CBA8E7F851199DF720C9
+	set HEX_ADDRESS "EA"
+elif chk $[INPUT_HASH] F8D20E598DF20877E4D826246FC31FFB4615CBC059AEC9EC8E5B28951D844A3F
+	set HEX_ADDRESS "EB"
+elif chk $[INPUT_HASH] 45F83D17E10B34FCA01EB8F4454DAC34A777D9404A464E732CF4ABF2C0DA94C4
+	set HEX_ADDRESS "EC"
+elif chk $[INPUT_HASH] F3DF1F9C358AE8ECEB8FCE7C00614288D113AD55315F4EBB909774A7DAADFC84
+	set HEX_ADDRESS "ED"
+elif chk $[INPUT_HASH] 94455E3ED9F716BEA425EF99B51FAE47128769A1A0CD04244221E4E14631AB83
+	set HEX_ADDRESS "EE"
+elif chk $[INPUT_HASH] 4D4D75D742863AB9656F3D5F76DFF8589C3922E95A24EA6812157FFE4AAA3B6B
+	set HEX_ADDRESS "EF"
+elif chk $[INPUT_HASH] FDE502858306C235A3121E42326B53228B7EF4690EEED92A2B2EAFE73C03A3EF
+	set HEX_ADDRESS "F0"
+elif chk $[INPUT_HASH] D4F09E5C5AF99A24C7E304CA7997D26CB00901697DE08A49BE0D46AB5839B614
+	set HEX_ADDRESS "F1"
+elif chk $[INPUT_HASH] 966C7C47125C74575A9A1153B799FAF55BE33A04E3D9F98760A3EEAC377103DF
+	set HEX_ADDRESS "F2"
+elif chk $[INPUT_HASH] 782E02029374527BD2A5FE7B9545DF6C2911078E337A62573970B178D93DB481
+	set HEX_ADDRESS "F3"
+elif chk $[INPUT_HASH] 2017FF3461395672AA0AA4F64894FD2F95A4B120E2690E8951656D79ADC2EED2
+	set HEX_ADDRESS "F4"
+elif chk $[INPUT_HASH] 27ABDEDDFE8503496ADEB623466CAA47DA5F63ABD2BC6FA19F6CFCB73ECFED70
+	set HEX_ADDRESS "F5"
+elif chk $[INPUT_HASH] B0B2988B6BBE724BACDA5E9E524736DE0BC7DAE41C46B4213C50E1D35D4E5F13
+	set HEX_ADDRESS "F6"
+elif chk $[INPUT_HASH] 50868F20258BBC9CCE0DA2719E8654C108733DD2F663B8737C574EC0EAD93EB3
+	set HEX_ADDRESS "F7"
+elif chk $[INPUT_HASH] E596A8E5C49DD20A79BD0C1A7DD190A674507D1129785746FCC1C5E64CD8416C
+	set HEX_ADDRESS "F8"
+elif chk $[INPUT_HASH] D52022534FA2DBA3BB8A45809C425F42A5DD8786EF8D206FCFF19C1FD66725B4
+	set HEX_ADDRESS "F9"
+elif chk $[INPUT_HASH] AA7225E7D5B0A2552BBB58880B3EC00C286995B801A7AEB69281E76A8B4908DE
+	set HEX_ADDRESS "FA"
+elif chk $[INPUT_HASH] 04B8D34E20E604CADB04B9DB8F6778C35F45A2D2A3335EA517DAFE8C9CD9B06E
+	set HEX_ADDRESS "FB"
+elif chk $[INPUT_HASH] 98722E2EBED8ED3D3652E11E4181F0DCCC1CE7D192D8F1DB370AF8EC4A4E174A
+	set HEX_ADDRESS "FC"
+elif chk $[INPUT_HASH] 3E151409ACE91CB3394FECD59E92B5DC42C0AAD29993A1858F2F70A0866A539B
+	set HEX_ADDRESS "FD"
+elif chk $[INPUT_HASH] AA687B58B0E73E2E383F8C500D75B591E188EFE0168B3FFBCD3771CAAA6DD4C7
+	set HEX_ADDRESS "FE"
+elif chk $[INPUT_HASH] A8100AE6AA1940D0B663BB31CD466142EBBDBD5187131B92D93818987832EB89
+	set HEX_ADDRESS "FF"
+end
+
+rm $[INPUT_HEX]
+
+  if chk $[HASH_HEX_RUN] "01"
+	goto BANNER_1B
+elif chk $[HASH_HEX_RUN] "02"
+	goto BANNER_1A
+elif chk $[HASH_HEX_RUN] "03"
+	goto BANNER_19
+elif chk $[HASH_HEX_RUN] "04"
+	goto BANNER_18
+elif chk $[HASH_HEX_RUN] "05"
+	goto ICON_2B
+elif chk $[HASH_HEX_RUN] "06"
+	goto ICON_2A
+elif chk $[HASH_HEX_RUN] "07"
+	goto ICON_29
+elif chk $[HASH_HEX_RUN] "08"
+	goto ICON_28
+elif chk $[HASH_HEX_RUN] "09"
+	goto LOGO_3B
+elif chk $[HASH_HEX_RUN] "10"
+	goto LOGO_3A
+elif chk $[HASH_HEX_RUN] "11"
+	goto LOGO_39
+elif chk $[HASH_HEX_RUN] "12"
+	goto LOGO_38
+end
